@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flink-jobmanager-config
+data:
+  flink-conf.yaml: |
+    # Job Manager RPC
+    jobmanager.rpc.address: flink-jobmanager
+    jobmanager.rpc.port: 6123
+
+    # Environment
+    env.log.dir: /app/log
+    env.pid.dir: /app/tmp/pid
+
+    # IO
+    io.tmp.dirs: /app/tmp/io
+
+    # Blob Server
+    blob.client.connect.timeout: 0
+    blob.client.socket.timeout: 300000
+    blob.fetch.backlog: 1000
+    blob.fetch.num-concurrent: 50
+    blob.fetch.retries: 5
+    blob.offload.minsize: 1048576
+    blob.server.port: 6124
+    blob.service.cleanup.interval: 3600
+    blob.service.ssl.enabled: false
+    blob.storage.directory: /app/tmp/blobs
+
+    # Memory
+    jobmanager.memory.process.size: 2048mb
+    jobmanager.memory.flink.size: 1536mb
+    jobmanager.memory.heap.size: 1536mb
+    jobmanager.memory.off-heap.size: 0
+    jobmanager.memory.jvm-metaspace.size: 256mb
+    jobmanager.memory.jvm-overhead.fraction: 0.1
+    jobmanager.memory.jvm-overhead.max: 256mb
+    jobmanager.memory.jvm-overhead.min: 256mb
+
+    ############################################################
+    #
+    # Job Manager Specific
+    #
+    ############################################################
+
+    # Rest UI
+    rest.address: 0.0.0.0
+    rest.bind-address: 0.0.0.0
+    rest.port: 8080
+    rest.bind-port: 8080
+
+    # Restart Strategy
+    restart-strategy: failure-rate
+    restart-strategy.failure-rate.delay: 1 s
+    restart-strategy.failure-rate.failure-rate-interval: 1 min
+    restart-strategy.failure-rate.max-failures-per-interval: 1
+    # restart-strategy.fixed-delay.attempts: 1
+    # restart-strategy.fixed-delay.delay: 1 s
+
+    # Scheduling
+    jobmanager.adaptive-scheduler.min-parallelism-increase: 1
+    jobmanager.adaptive-scheduler.resource-stabilization-timeout: 10 s
+    jobmanager.adaptive-scheduler.resource-wait-timeout: 5 min
+    jobmanager.archive.fs.dir: file:///app/tmp/archive
+    jobmanager.execution.attempts-history-size: 16
+    jobmanager.execution.failover-strategy: region
+    jobmanager.retrieve-taskmanager-hostname: true
+
+    # Job Store
+    jobstore.cache-size: 52428800
+    jobstore.expiration-time: 3600
+    jobstore.max-capacity: 2147483647
+
+    # Web
+    web.exception-history-size: 16
+    web.access-control-allow-origin: "*"
+    web.cancel.enable: true
+    web.checkpoints.history: 100
+    web.exception-history-size: 16
+    web.history: 10
+    web.log.path: log
+    web.refresh-interval: 5000
+    web.submit.enable: true
+    web.timeout: 600000
+    web.tmpdir: /app/tmp/web
+    web.upload.dir: /app/tmp/uploads

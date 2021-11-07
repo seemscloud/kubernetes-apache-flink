@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flink-taskmanager-config
+data:
+  flink-conf.yaml: |
+    # Job Manager RPC
+    jobmanager.rpc.address: flink-jobmanager
+    jobmanager.rpc.port: 6123
+
+    # Environment
+    env.log.dir: /app/log
+    env.pid.dir: /app/tmp/pid
+
+    # IO
+    io.tmp.dirs: /app/tmp/io
+
+    # Blob Server
+    blob.client.connect.timeout: 0
+    blob.client.socket.timeout: 300000
+    blob.fetch.backlog: 1000
+    blob.fetch.num-concurrent: 50
+    blob.fetch.retries: 5
+    blob.offload.minsize: 1048576
+    blob.server.port: 6124
+    blob.service.cleanup.interval: 3600
+    blob.service.ssl.enabled: false
+    blob.storage.directory: /app/tmp/blobs
+
+    # Memory
+    taskmanager.memory.process.size: 4096mb
+    taskmanager.memory.flink.size: 3584mb
+    taskmanager.memory.framework.heap.size: 256mb
+    taskmanager.memory.task.heap.size: 2048mb
+    taskmanager.memory.framework.off-heap.size: 256mb
+    taskmanager.memory.managed.size: 512mb
+    taskmanager.memory.managed.fraction: 0.1
+    taskmanager.memory.network.min: 256mb
+    taskmanager.memory.network.max: 256mb
+    taskmanager.memory.network.fraction: 0.1
+    taskmanager.memory.task.off-heap.size: 256mb
+    taskmanager.memory.jvm-metaspace.size: 256mb
+    taskmanager.memory.jvm-overhead.fraction: 0.1
+    taskmanager.memory.jvm-overhead.min: 256mb
+    taskmanager.memory.jvm-overhead.max: 256mb
+
+    ############################################################
+    #
+    # Job Manager Specific
+    #
+    ############################################################
+
+    # Host & Ports
+    # taskmanager.host: test
+    taskmanager.rpc.port: 6123
+    taskmanager.data.port: 7123
+
+    # Tasks
+    taskmanager.numberOfTaskSlots: 10

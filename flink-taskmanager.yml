@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flink-taskmanager
+  labels:
+    app: flink-taskmanager
+spec:
+  replicas: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1%
+  selector:
+    matchLabels:
+      app: flink-taskmanager
+  template:
+    metadata:
+      labels:
+        app: flink-taskmanager
+    spec:
+      containers:
+        - name: flink-taskmanager
+          image: seemscloud/flink:1.0.2
+          imagePullPolicy: IfNotPresent
+          command: [ "taskmanager.sh" ]
+          args: [ "start-foreground" ]
+          ports:
+            - name: rpc
+              containerPort: 6123
+          volumeMounts:
+            - mountPath: /app/conf/flink-conf.yaml
+              name: flink-config
+              subPath: flink-conf.yaml
+          readinessProbe:
+            tcpSocket:
+              port: 6123
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          livenessProbe:
+            tcpSocket:
+              port: 6123
+            initialDelaySeconds: 15
+            periodSeconds: 1
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          resources:
+            limits:
+              memory: "4096Mi"
+              cpu: "1000m"
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+      volumes:
+        - name: flink-config
+          configMap:
+            name: flink-taskmanager-config
+            defaultMode: 0777
