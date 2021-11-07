@@ -4,6 +4,9 @@ metadata:
   name: flink-taskmanager
   labels:
     app: flink-taskmanager
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '9090'
 spec:
   selector:
     matchLabels:
@@ -12,15 +15,19 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
-      maxUnavailable: 1%
+      maxUnavailable: 50%
   replicas: 5
   template:
     metadata:
       labels:
         app: flink-taskmanager
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '9090'
     spec:
       containers:
         - name: flink-taskmanager
+
           image: seemscloud/flink:1.0.2
           imagePullPolicy: IfNotPresent
           command: [ "taskmanager.sh" ]
@@ -28,6 +35,8 @@ spec:
           ports:
             - name: rpc
               containerPort: 6123
+            - name: prometheus
+              containerPort: 9090
           volumeMounts:
             - mountPath: /app/conf/flink-conf.yaml
               name: flink-config

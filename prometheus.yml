@@ -8,15 +8,20 @@ spec:
   selector:
     matchLabels:
       app: prometheus
-  serviceName: prometheus
   replicas: 1
+  serviceName: prometheus
   template:
     metadata:
       labels:
         app: prometheus
     spec:
+      serviceAccountName: prometheus
+      automountServiceAccountToken: true
       containers:
         - name: prometheus
+          args:
+            - --config.file=/etc/prometheus/prometheus.yml
+            - --log.level=debug
           image: prom/prometheus:latest
           ports:
             - containerPort: 9090

@@ -4,7 +4,28 @@ metadata:
   name: prometheus-config
 data:
   prometheus.yml: |
+    global:
+      scrape_interval: 5s
+      scrape_timeout: 2s
     scrape_configs:
-      - job_name: "flink-jobmanager"
+      - job_name: "flink-jobmanager-service"
         static_configs:
           - targets: ["flink-jobmanager:9090"]
+      - job_name: "flink-taskmanager-endpoints"
+        kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+              names:
+                - flink
+            selectors:
+              - role: pod
+                label: "app=flink-taskmanager"
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+            action: replace
+            regex: (.+):(?:\d+);(\d+)
+            replacement: ${1}:${2}
+            target_label: __address__
