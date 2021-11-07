@@ -5,15 +5,15 @@ metadata:
   labels:
     app: flink-taskmanager
 spec:
-  replicas: 5
+  selector:
+    matchLabels:
+      app: flink-taskmanager
   strategy:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 1%
-  selector:
-    matchLabels:
-      app: flink-taskmanager
+  replicas: 5
   template:
     metadata:
       labels:

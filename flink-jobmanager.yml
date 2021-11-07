@@ -5,15 +5,15 @@ metadata:
   labels:
     app: flink-jobmanager
 spec:
-  replicas: 1
+  selector:
+    matchLabels:
+      app: flink-jobmanager
   strategy:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 1%
-  selector:
-    matchLabels:
-      app: flink-jobmanager
+  replicas: 2
   template:
     metadata:
       labels:
@@ -26,10 +26,10 @@ spec:
           command: [ "jobmanager.sh" ]
           args: [ "start-foreground" ]
           ports:
-            - name: ui
-              containerPort: 8080
             - name: rpc
               containerPort: 6123
+            - name: ui
+              containerPort: 8080
             - name: blob
               containerPort: 6124
           volumeMounts:

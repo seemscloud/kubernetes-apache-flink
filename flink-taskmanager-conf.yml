@@ -44,6 +44,11 @@ data:
     taskmanager.memory.jvm-overhead.min: 256mb
     taskmanager.memory.jvm-overhead.max: 256mb
 
+    # Metrics
+    metrics.reporters: prom
+    metrics.reporter.prom.port: 9090
+    metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
+
     ############################################################
     #
     # Job Manager Specific
