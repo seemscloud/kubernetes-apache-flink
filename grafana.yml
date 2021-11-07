@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: grafana
+  labels:
+    app: grafana
+spec:
+  selector:
+    matchLabels:
+      app: grafana
+  replicas: 1
+  serviceName: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:latest
+          ports:
+            - containerPort: 3000
+              name: ui
+          volumeMounts:
+            - mountPath: /etc/grafana/provisioning/datasources/datasources.yaml
+              name: grafana-config
+              subPath: datasources.yaml
+            - mountPath: /etc/grafana/provisioning/dashboards/dashboards.yaml
+              name: grafana-config
+              subPath: dashboards.yaml
+            - mountPath: /var/lib/grafana/dashboards/flink-dashboard.json
+              name: grafana-config
+              subPath: flink-dashboard.json
+      volumes:
+        - name: grafana-config
+          configMap:
+            name: grafana-config
